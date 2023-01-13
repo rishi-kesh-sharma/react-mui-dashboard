@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
-import { Mail, Code, Notifications } from "@mui/icons-material"
+import { Mail, Code, Notifications } from "@mui/icons-material";
 import {
   AppBar,
   Toolbar,
@@ -14,19 +14,19 @@ import {
   Menu,
   MenuItem,
   menuItemClasses,
-} from "@mui/material"
+} from "@mui/material";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between",
-})
+});
 
 const SearchBar = styled("div")(({ theme }) => ({
   backgroundColor: "rgba(0,0,0,0.2)",
   padding: "0 10px",
   borderRadius: theme.shape.borderRadius,
   width: "40%",
-}))
+}));
 
 const Actions = styled(Box)(({ theme }) => ({
   display: "none",
@@ -35,7 +35,7 @@ const Actions = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     display: "flex",
   },
-}))
+}));
 
 const UserBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -44,49 +44,49 @@ const UserBox = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up("sm")]: {
     display: "none",
   },
-}))
+}));
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-  const openMenu = () => setOpen(true)
-  const closeMenu = () => setOpen(false)
+  const openMenu = () => setOpen(true);
+  const closeMenu = () => setOpen(false);
 
   return (
-    <AppBar position='sticky'>
+    <AppBar position="sticky" sx={{ top: 0 }}>
       <StyledToolbar>
         {/* brandname */}
         <Typography
-          variant='h6'
+          variant="h6"
           fontWeight={600}
           sx={{ display: { xs: "none", sm: "block" } }}
         >
-          {"<JohnKoder />"}
+          Blood Bank Management System
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
 
         {/* searchbar */}
         <SearchBar>
-          <InputBase placeholder='Search...' />
+          <InputBase placeholder="Search..." />
         </SearchBar>
 
         {/* actions */}
         <Actions>
-          <IconButton>
-            <Badge badgeContent={4} color='error'>
+          {/* <IconButton>
+            <Badge badgeContent={4} color="error">
               <Mail />
             </Badge>
-          </IconButton>
-          <IconButton>
-            <Badge badgeContent={"10+"} color='error'>
-              <Notifications color='inherit' />
+          </IconButton> */}
+          {/* <IconButton>
+            <Badge badgeContent={"10+"} color="error">
+              <Notifications color="inherit" />
             </Badge>
-          </IconButton>
+          </IconButton> */}
 
           <Avatar
-            sx={{ width: 30, height: 30, marginLeft: "13px" }}
-            src='/logo.png'
-            alt='JD'
+            sx={{ width: 45, height: 45, marginLeft: "13px" }}
+            src="/profile.png"
+            alt="Rishi"
           />
         </Actions>
 
@@ -96,7 +96,7 @@ const Navbar = () => {
             sx={{ width: 30, height: 30, marginLeft: "13px" }}
             onClick={openMenu}
           />
-          <Typography variant='span'>John</Typography>
+          <Typography variant="span">Rishi</Typography>
 
           <Menu
             open={open}
@@ -111,13 +111,12 @@ const Navbar = () => {
             }}
           >
             <MenuItem>Profile</MenuItem>
-            <MenuItem>My account</MenuItem>
             <MenuItem>Logout</MenuItem>
           </Menu>
         </UserBox>
       </StyledToolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

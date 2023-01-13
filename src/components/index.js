@@ -1,0 +1,9 @@
+export { default as Navbar } from "./Navbar";
+export { default as Sidebar } from "./Sidebar";
+export { default as Banks } from "./Banks";
+export { default as Users } from "./Users";
+export { default as Contacts } from "./Contacts";
+export { default as Settings } from "./Settings";
+export { default as Home } from "./Home";
+export { default as AddForm } from "./AddForm";
+export { default as Content } from "./Content";

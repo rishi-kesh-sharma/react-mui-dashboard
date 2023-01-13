@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 import {
   Box,
@@ -8,47 +8,53 @@ import {
   ListItemIcon,
   ListItemText,
   Switch,
-} from "@mui/material"
+} from "@mui/material";
 
 import {
-  Person,
   Home,
-  Pages,
   Groups,
-  AccountBox,
-  Storefront,
   Settings,
   ModeNight,
   LightMode,
-} from "@mui/icons-material"
-import { red } from "@mui/material/colors"
+  AccountBalance,
+} from "@mui/icons-material";
+import ContactsIcon from "@mui/icons-material/Contacts";
+import { red } from "@mui/material/colors";
+import { Link } from "react-router-dom";
 
 const Sidebar = ({ toogleThemeMode, themeMode }) => {
   let links = [
-    { icon: <Home />, title: "Homepage" },
-    { icon: <Pages />, title: "Pages" },
-    { icon: <Groups />, title: "Groups" },
-    { icon: <Storefront />, title: "MarketPlace" },
-    { icon: <Person />, title: "Friends" },
-    { icon: <Settings />, title: "Settings" },
-    { icon: <AccountBox />, title: "Profile" },
-  ]
+    { icon: <Home />, title: "Home", path: "/" },
+    { icon: <AccountBalance />, title: "Banks", path: "/dashboard/banks" },
+    { icon: <Groups />, title: "Users", path: "/dashboard/users" },
+    { icon: <ContactsIcon />, title: "Contacts", path: "/dashboard/contacts" },
+    { icon: <Settings />, title: "Settings", path: "/dashboard/settings" },
+  ];
 
   return (
     <Box
       flex={1}
       p={1}
       // bgcolor={red[200]} // debuging stuff
-      sx={{ display: { xs: "none", sm: "block" }, minWidth: "200px" }}
+      sx={{
+        display: { xs: "none", sm: "block" },
+        minWidth: "150px",
+        height: "100vh",
+        width: "200px",
+        maxWidth: "20%",
+        borderRight: "1px solid #c9c8c7 ",
+      }}
     >
-      <Box position='fixed'>
+      <Box position="fixed">
         <List>
-          {links.map(({ title, icon }, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemButton component='a' href='#home'>
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText primary={title} />
-              </ListItemButton>
+          {links.map(({ title, icon, path }, index) => (
+            <ListItem key={index}>
+              <Link to={path} style={{ textDecoration: "none", color: "red" }}>
+                <ListItemButton>
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText primary={title} />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
 
@@ -64,7 +70,7 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
         </List>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
