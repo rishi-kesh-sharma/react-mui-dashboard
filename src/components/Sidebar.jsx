@@ -20,11 +20,11 @@ import {
 } from "@mui/icons-material";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import { red } from "@mui/material/colors";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 const Sidebar = ({ toogleThemeMode, themeMode }) => {
   let links = [
-    { icon: <Home />, title: "Home", path: "/" },
+    { icon: <Home />, title: "Overview", path: "/dashboard" },
     { icon: <AccountBalance />, title: "Banks", path: "/dashboard/banks" },
     { icon: <Groups />, title: "Users", path: "/dashboard/users" },
     { icon: <ContactsIcon />, title: "Contacts", path: "/dashboard/contacts" },
@@ -43,8 +43,7 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
         width: "200px",
         maxWidth: "20%",
         borderRight: "1px solid #c9c8c7 ",
-      }}
-    >
+      }}>
       <Box position="fixed">
         <List>
           {links.map(({ title, icon, path }, index) => (

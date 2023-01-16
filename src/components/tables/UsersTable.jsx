@@ -7,6 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { useEffect } from "react";
+import { getAllUsers, getUser } from "../../apiCalls/user";
 
 const columns = [
   { id: "sn", label: "SN", minWidth: 60 },
@@ -18,27 +20,6 @@ const columns = [
   { id: "role", label: "Role", minWidth: 100 },
   { id: "edit", label: "Edit", minWidth: 50 },
   { id: "remove", label: "Remove", minWidth: 50 },
-  // {
-  //   id: "population",
-  //   label: "Population",
-  //   minWidth: 170,
-  //   align: "right",
-  //   format: (value) => value.toLocaleString("en-US"),
-  // },
-  // {
-  //   id: "size",
-  //   label: "Size\u00a0(km\u00b2)",
-  //   minWidth: 170,
-  //   align: "right",
-  //   format: (value) => value.toLocaleString("en-US"),
-  // },
-  // {
-  //   id: "density",
-  //   label: "Density",
-  //   minWidth: 170,
-  //   align: "right",
-  //   format: (value) => value.toFixed(2),
-  // },
 ];
 
 function createData(
@@ -82,8 +63,7 @@ const rows = [
 
         cursor: "pointer",
         borderRadius: "0.4rem",
-      }}
-    >
+      }}>
       edit
     </button>,
     <button
@@ -95,8 +75,7 @@ const rows = [
 
         cursor: "pointer",
         borderRadius: "0.4rem",
-      }}
-    >
+      }}>
       remove
     </button>
   ),
@@ -117,6 +96,11 @@ const rows = [
 ];
 
 export default function UsersTable() {
+  const [loading, setLoading] = React.useState(true);
+  useEffect(async () => {
+    const response = await getAllUsers();
+    console.log(response);
+  }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -139,8 +123,7 @@ export default function UsersTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
+                  style={{ minWidth: column.minWidth }}>
                   {column.label}
                 </TableCell>
               ))}

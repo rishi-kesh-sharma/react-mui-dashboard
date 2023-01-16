@@ -1,8 +1,13 @@
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import "./Login.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LOGIN } from "../actions/authActions";
+import { checkTokenValidity, loginUser } from "../apiCalls/auth";
+import { SET_ERROR } from "../actions/errorActions";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 
 // Creating schema
 const schema = Yup.object().shape({
@@ -13,11 +18,50 @@ const schema = Yup.object().shape({
 });
 
 const Login = () => {
+  // const [tokenValidity, setTokenValidity] = useState(false);
   const dispatch = useDispatch();
-  const submitForm = (values) => {
-    // console.log(values);
-    dispatch({ type: LOGIN, payload: values });
+  const navigate = useNavigate();
+
+  // const userData = useSelector((state) => state.authReducer);
+  useEffect(async () => {
+    const response = await checkTokenValidity();
+
+    // setTokenValidity(response.isValid);
+    if (response.isValid)
+      dispatch({
+        type: LOGIN,
+        payload: {
+          isAuthenticated: true,
+          authenticatedUser: response.user,
+        },
+      });
+    // navigate("/dashboard");
+  }, []);
+  const submitForm = async ({ email, password }) => {
+    try {
+      const response = await loginUser({ email, password });
+      const { status, data } = await response;
+      const { message, user, success, token } = await data;
+      if (status == 200 && success) {
+        dispatch({
+          type: LOGIN,
+          payload: {
+            isAuthenticated: true,
+            authenticatedUser: user,
+          },
+        });
+        localStorage.setItem("auth-token", token);
+        navigate("/dashboard");
+      } else {
+        dispatch({ type: SET_ERROR, payload: message });
+      }
+    } catch (err) {}
   };
+
+  // const { isAuthenticated } = useSelector((state) => state.authReducer);
+  // if (isAuthenticated) return <Navigate to="/dashboard" />;
+  // if (tokenValidity) navigate("/dashboard");
+  // if (tokenValidity) return <Navigate to="/dashboard" />;
 
   return (
     <>
@@ -25,8 +69,7 @@ const Login = () => {
       <Formik
         validationSchema={schema}
         initialValues={{ email: "", password: "" }}
-        onSubmit={submitForm}
-      >
+        onSubmit={submitForm}>
         {({
           values,
           errors,

@@ -12,7 +12,13 @@ import {
   Users,
   Content,
 } from "../components";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Dashboard = () => {
+  const { isAuthenticated, authenticatedUser } = useSelector(
+    (state) => state.authReducer
+  );
+
   const [mode, setMode] = useState("light");
   const toogleThemeMode = () => setMode(mode === "light" ? "dark" : "light");
 
@@ -21,15 +27,24 @@ const Dashboard = () => {
       mode,
     },
   });
+  console.log(isAuthenticated);
+  if (isAuthenticated) return <Navigate to="/dashboard/" />;
   return (
     <div>
-      <Box bgcolor={"background.default"} color={"text.primary"}>
-        <Navbar />
-        <Stack direction="row" justifyContent="space-between" gap="10px">
-          <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
-          <Content />
-        </Stack>
-      </Box>
+      {/* {isAuthenticated ? ( */}
+      <ThemeProvider theme={theme}>
+        <Box bgcolor={"background.default"} color={"text.primary"}>
+          <Navbar />
+          <Stack direction="row" justifyContent="space-between" gap="10px">
+            <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
+            <Outlet />
+          </Stack>
+        </Box>
+      </ThemeProvider>
+      {/* ) : (
+        <Navigate to="/" />
+      )} */}
+      {/* <Content /> */}
     </div>
   );
 };

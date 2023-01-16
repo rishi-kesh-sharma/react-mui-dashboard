@@ -1,20 +1,16 @@
 import { LOGIN, LOGOUT } from "./../actions/authActions";
 import { loginUser, logoutUser } from "../apiCalls/auth";
-const authReducer = async (
-  state = [{ isLogged: false, loggedUser: {} }],
+const authReducer = (
+  state = { isAuthenticated: false, authenticatedUser: {} },
   action
 ) => {
   switch (action.type) {
     case LOGIN: {
-      const { email, password } = action.payload;
-      const response = await loginUser({ email, password });
+      state = action.payload;
       return state;
     }
     case LOGOUT:
-      const response = await logoutUser();
-      //   console.log(response);
-
-      //   console.log(response);
+      state = action.payload;
       return state;
 
     default:

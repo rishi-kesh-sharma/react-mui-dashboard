@@ -11,6 +11,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import { useState } from "react";
+import { getAllBanks } from "../../apiCalls/banks";
+import { interceptor } from "../../utils/utils";
 
 const columns = [
   { id: "sn", label: "SN", minWidth: 60 },
@@ -77,8 +80,7 @@ const rows = [
           <a
             key={socials}
             href={socials.facebook}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}
-          >
+            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
             <FacebookIcon />
           </a>
         ),
@@ -89,8 +91,7 @@ const rows = [
           <a
             key={socials}
             href={socials.twitter}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}
-          >
+            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
             <TwitterIcon />
           </a>
         ),
@@ -101,8 +102,7 @@ const rows = [
           <a
             key={socials}
             href={socials.instagram}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}
-          >
+            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
             <InstagramIcon />
           </a>
         ),
@@ -113,8 +113,7 @@ const rows = [
           <a
             key={socials}
             href={socials.linkedin}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}
-          >
+            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
             <LinkedInIcon />
           </a>
         ),
@@ -130,8 +129,7 @@ const rows = [
 
         cursor: "pointer",
         borderRadius: "0.4rem",
-      }}
-    >
+      }}>
       edit
     </button>,
     <button
@@ -142,8 +140,7 @@ const rows = [
         padding: "0.2rem 0.5rem",
         cursor: "pointer",
         borderRadius: "0.4rem",
-      }}
-    >
+      }}>
       remove
     </button>
   ),
@@ -152,6 +149,13 @@ const rows = [
 export default function BanksTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [loading, setLoading] = useState(true);
+
+  useState(async () => {
+    interceptor();
+    const banks = await getAllBanks();
+    console.log(banks);
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -172,8 +176,7 @@ export default function BanksTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
+                  style={{ minWidth: column.minWidth }}>
                   {column.label}
                 </TableCell>
               ))}

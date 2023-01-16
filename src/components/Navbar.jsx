@@ -15,6 +15,10 @@ import {
   MenuItem,
   menuItemClasses,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { LOGOUT } from "../actions/authActions";
+import { logoutUser } from "../apiCalls/auth";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -47,21 +51,33 @@ const UserBox = styled(Box)(({ theme }) => ({
 }));
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(true);
 
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
 
+  const handleLogoutClick = async (e) => {
+    const response = await logoutUser();
+    localStorage.removeItem("auth-token");
+    dispatch({
+      type: LOGOUT,
+      payload: { isAuthenticated: false, authenticatedUser: {} },
+    });
+
+    navigate("/");
+  };
+
   return (
-    <AppBar position="sticky" sx={{ top: 0 }}>
+    <AppBar position="sticky">
       <StyledToolbar>
         {/* brandname */}
         <Typography
           variant="h6"
           fontWeight={600}
-          sx={{ display: { xs: "none", sm: "block" } }}
-        >
-          Blood Bank Management System
+          sx={{ display: { xs: "none", sm: "block" } }}>
+          {"<JohnKoder />"}
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
 
@@ -72,31 +88,25 @@ const Navbar = () => {
 
         {/* actions */}
         <Actions>
-          {/* <IconButton>
-            <Badge badgeContent={4} color="error">
-              <Mail />
-            </Badge>
-          </IconButton> */}
-          {/* <IconButton>
-            <Badge badgeContent={"10+"} color="error">
-              <Notifications color="inherit" />
-            </Badge>
-          </IconButton> */}
-
+          <button onClick={handleLogoutClick}>Logout</button>
           <Avatar
-            sx={{ width: 45, height: 45, marginLeft: "13px" }}
-            src="/profile.png"
-            alt="Rishi"
+            sx={{ width: 30, height: 30, marginLeft: "13px", zIndex: 2000 }}
+            src="/logo.png"
+            alt="JD"
           />
         </Actions>
 
         {/* mobile actions (hidden for desktop) */}
         <UserBox>
           <Avatar
-            sx={{ width: 30, height: 30, marginLeft: "13px" }}
+            sx={{
+              width: 30,
+              height: 30,
+              // marginRight: "1rem",
+            }}
             onClick={openMenu}
           />
-          <Typography variant="span">Rishi</Typography>
+          <Typography variant="span">John</Typography>
 
           <Menu
             open={open}
@@ -108,9 +118,9 @@ const Navbar = () => {
             transformOrigin={{
               vertical: "top",
               horizontal: "right",
-            }}
-          >
+            }}>
             <MenuItem>Profile</MenuItem>
+            <MenuItem>My account</MenuItem>
             <MenuItem>Logout</MenuItem>
           </Menu>
         </UserBox>

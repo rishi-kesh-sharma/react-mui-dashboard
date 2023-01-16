@@ -1,5 +1,6 @@
 import axios from "axios";
+import { BASE_URL } from "../constants/constants";
 export const getAllBanks = async () => {
-  const allBanks = await axios.get("http://localhost:4000/api/bank/all");
-  console.log(allBanks);
+  const allBanks = await axios.get(`${BASE_URL}/bank/all`);
+  return allBanks;
 };
