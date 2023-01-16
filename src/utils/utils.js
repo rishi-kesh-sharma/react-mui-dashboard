@@ -9,7 +9,7 @@ export const interceptor = () => {
       config.headers["auth-token"] = token;
       // if (allowedOrigins.includes(origin)) {
       // }
-      console.log(config.headers["auth-token"]);
+      // console.log(config.headers["auth-token"]);
       return config;
     },
     (error) => {

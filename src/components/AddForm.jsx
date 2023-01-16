@@ -31,10 +31,7 @@ export default function AddForm({ post }) {
             {username[0]}
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings">
-          </IconButton>
-        }
+        action={<IconButton aria-label="settings"></IconButton>}
         title={username}
         subheader={createdAt}
       />

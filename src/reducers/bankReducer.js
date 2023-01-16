@@ -4,13 +4,15 @@ import {
   UPDATE_BANK,
   GET_SINGLE_BANK,
   GET_ALL_BANKS,
+  SET_BANKS,
 } from "../actions/bankActions";
-import { getAllBanks } from "../apiCalls/banks";
-const bankReducer = async (state = [], action) => {
+const bankReducer = (state = [], action) => {
   switch (action.type) {
-    case GET_ALL_BANKS:
-      const banks = await getAllBanks();
-      return banks;
+    case SET_BANKS:
+      state = action.payload;
+      return state;
+    case UPDATE_BANK:
+      return state;
     case ADD_BANK:
       return state;
     case UPDATE_BANK:

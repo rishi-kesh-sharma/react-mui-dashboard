@@ -5,15 +5,22 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useState } from "react";
-import { getAllBanks } from "../../apiCalls/banks";
 import { interceptor } from "../../utils/utils";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteBank, updateBank } from "../../apiCalls/banks";
+import { SET_BANKS } from "../../actions/bankActions";
+import { useNavigate } from "react-router-dom";
+import Modal from "../Modal";
+import KeepMountedModal from "../Modal";
+import BankUpdateForm from "../forms/BankUpdateForm";
 
 const columns = [
   { id: "sn", label: "SN", minWidth: 60 },
@@ -23,7 +30,7 @@ const columns = [
   { id: "email", label: "Email", minWidth: 100 },
   { id: "contact", label: "contact", minWidth: 100 },
   { id: "category", label: "Category", minWidth: 100 },
-  { id: "category", label: "Website", minWidth: 100 },
+  { id: "website", label: "Website", minWidth: 100 },
   { id: "socials", label: "Socials", minWidth: 100 },
   { id: "edit", label: "edit", minWidth: 50 },
   { id: "remove", label: "remove", minWidth: 50 },
@@ -56,115 +63,137 @@ function createData(
     remove,
   };
 }
-const socials = {
-  facebook: "https://facebook.com",
-  instagram: "https://instagram.com",
-  twitter: "https://twitter.com",
-  linkedin: "https://linkedin.com",
-};
-const rows = [
-  createData(
-    1,
-    "my avatar",
-    "Nepal Red Cross society",
-    "kathmandu",
-    "redcross@gmail.com",
-    "9876543210",
-    "national",
-    "https://redcross.com",
-
-    [
-      {
-        name: "facebook",
-        link: (
-          <a
-            key={socials}
-            href={socials.facebook}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
-            <FacebookIcon />
-          </a>
-        ),
-      },
-      {
-        name: "twitter",
-        link: (
-          <a
-            key={socials}
-            href={socials.twitter}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
-            <TwitterIcon />
-          </a>
-        ),
-      },
-      {
-        name: "instagram",
-        link: (
-          <a
-            key={socials}
-            href={socials.instagram}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
-            <InstagramIcon />
-          </a>
-        ),
-      },
-      {
-        name: "linkedin",
-        link: (
-          <a
-            key={socials}
-            href={socials.linkedin}
-            style={{ margin: "0 0.4rem", textDecoration: "none" }}>
-            <LinkedInIcon />
-          </a>
-        ),
-      },
-    ],
-
-    <button
-      style={{
-        background: "blue",
-        color: "white",
-        border: "none",
-        padding: "0.2rem 0.5rem",
-
-        cursor: "pointer",
-        borderRadius: "0.4rem",
-      }}>
-      edit
-    </button>,
-    <button
-      style={{
-        background: "red",
-        color: "white",
-        border: "none",
-        padding: "0.2rem 0.5rem",
-        cursor: "pointer",
-        borderRadius: "0.4rem",
-      }}>
-      remove
-    </button>
-  ),
-];
-
 export default function BanksTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [open, setOpen] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
 
-  useState(async () => {
-    interceptor();
-    const banks = await getAllBanks();
-    console.log(banks);
-  }, []);
+  const banksInfo = useSelector((state) => state?.bankReducer);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handlePrevClick = () => {};
+  const handleNextClick = () => {};
+  const handleEdit = async (_id) => {
+    setOpen(true);
+    setEditingUserId(_id);
+  };
+  const handleDelete = async (_id) => {
+    const response = await deleteBank(_id);
+
+    const banks = banksInfo.banks.filter((bank) => bank._id != _id);
+    const allBanksInfo = {
+      banks,
+      skip: banksInfo.skip,
+      prev: banksInfo.prev,
+      next: banksInfo.next,
+    };
+    dispatch({ type: SET_BANKS, payload: allBanksInfo });
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const rows = banksInfo?.banks?.map((bank, index) => {
+    const {
+      address,
+      bankname,
+      category,
+      email,
+      contact,
+      socialMediaHandles,
+      website,
+      _id,
+      profilePic,
+    } = bank;
+    const { facebook, instagram, twitter, linkedin } = socialMediaHandles;
+    return createData(
+      index + 1,
+      profilePic,
+      bankname,
+      address,
+      email,
+      contact,
+      category[0],
+      website,
+      [
+        {
+          name: "facebook",
+          link: (
+            <a
+              key={facebook}
+              href={facebook}
+              style={{ margin: "0 0.4rem", textDecoration: "none" }}
+            >
+              <FacebookIcon />
+            </a>
+          ),
+        },
+        {
+          name: "twitter",
+          link: (
+            <a
+              key={twitter}
+              href={twitter}
+              style={{ margin: "0 0.4rem", textDecoration: "none" }}
+            >
+              <TwitterIcon />
+            </a>
+          ),
+        },
+        {
+          name: "instagram",
+          link: (
+            <a
+              key={instagram}
+              href={instagram}
+              style={{ margin: "0 0.4rem", textDecoration: "none" }}
+            >
+              <InstagramIcon />
+            </a>
+          ),
+        },
+        {
+          name: "linkedin",
+          link: (
+            <a
+              key={linkedin}
+              href={linkedin}
+              style={{ margin: "0 0.4rem", textDecoration: "none" }}
+            >
+              <LinkedInIcon />
+            </a>
+          ),
+        },
+      ],
+      <button
+        onClick={(e) => {
+          handleEdit(_id);
+        }}
+        style={{
+          background: "blue",
+          color: "white",
+          border: "none",
+          padding: "0.2rem 0.5rem",
+          cursor: "pointer",
+          borderRadius: "0.4rem",
+        }}
+      >
+        edit
+      </button>,
+      <button
+        onClick={(e) => handleDelete(_id)}
+        style={{
+          background: "red",
+          color: "white",
+          border: "none",
+          padding: "0.2rem 0.5rem",
+          cursor: "pointer",
+          borderRadius: "0.4rem",
+        }}
+      >
+        remove
+      </button>
+    );
+  });
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "5rem" }}>
@@ -176,18 +205,18 @@ export default function BanksTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}>
+                  style={{ minWidth: column.minWidth }}
+                >
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
+            {rows &&
+              rows?.map((row, index) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
@@ -204,15 +233,28 @@ export default function BanksTable() {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <div
+        style={{
+          margin: " 0.5rem 0 0.5rem 90% ",
+          display: "flex",
+          gap: "1.5rem",
+        }}
+      >
+        <ArrowBackIosNewIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handlePrevClick}
+        />
+        <ArrowForwardIosIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handleNextClick}
+        />
+      </div>
+      <>
+        {/* <Button variant="primary" onClick={() => setModalShow(true)}></Button> */}
+        <KeepMountedModal open={open} setOpen={setOpen}>
+          <BankUpdateForm editingUserId={editingUserId} />
+        </KeepMountedModal>
+      </>
     </Paper>
   );
 }

@@ -18,24 +18,24 @@ const schema = Yup.object().shape({
 });
 
 const Login = () => {
-  // const [tokenValidity, setTokenValidity] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const userData = useSelector((state) => state.authReducer);
-  useEffect(async () => {
-    const response = await checkTokenValidity();
-
-    // setTokenValidity(response.isValid);
-    if (response.isValid)
-      dispatch({
-        type: LOGIN,
-        payload: {
-          isAuthenticated: true,
-          authenticatedUser: response.user,
-        },
-      });
-    // navigate("/dashboard");
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const response = await checkTokenValidity();
+      if (response.isValid) {
+        dispatch({
+          type: LOGIN,
+          payload: {
+            isAuthenticated: true,
+            authenticatedUser: response.user,
+          },
+        });
+        navigate("/dashboard");
+      }
+    };
+    checkAuthentication();
   }, []);
   const submitForm = async ({ email, password }) => {
     try {
@@ -69,7 +69,8 @@ const Login = () => {
       <Formik
         validationSchema={schema}
         initialValues={{ email: "", password: "" }}
-        onSubmit={submitForm}>
+        onSubmit={submitForm}
+      >
         {({
           values,
           errors,

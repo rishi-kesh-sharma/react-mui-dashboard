@@ -13,11 +13,20 @@ import {
   Content,
 } from "../components";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { SET_OVERVIEW } from "../actions/overviewActions";
+import { getOverview } from "../apiCalls/misc";
 const Dashboard = () => {
-  const { isAuthenticated, authenticatedUser } = useSelector(
-    (state) => state.authReducer
-  );
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    const getOverviews = async () => {
+      const overviews = await getOverview();
+      dispatch({ type: SET_OVERVIEW, payload: overviews });
+    };
+    getOverviews();
+  });
+
+  const { isAuthenticated } = useSelector((state) => state.authReducer);
 
   const [mode, setMode] = useState("light");
   const toogleThemeMode = () => setMode(mode === "light" ? "dark" : "light");
@@ -27,23 +36,22 @@ const Dashboard = () => {
       mode,
     },
   });
-  console.log(isAuthenticated);
-  if (isAuthenticated) return <Navigate to="/dashboard/" />;
+  // if (isAuthenticated) return <Navigate to="/dashboard/" />;
   return (
     <div>
-      {/* {isAuthenticated ? ( */}
-      <ThemeProvider theme={theme}>
-        <Box bgcolor={"background.default"} color={"text.primary"}>
-          <Navbar />
-          <Stack direction="row" justifyContent="space-between" gap="10px">
-            <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
-            <Outlet />
-          </Stack>
-        </Box>
-      </ThemeProvider>
-      {/* ) : (
+      {isAuthenticated ? (
+        <ThemeProvider theme={theme}>
+          <Box bgcolor={"background.default"} color={"text.primary"}>
+            <Navbar />
+            <Stack direction="row" gap="3rem">
+              <Sidebar toogleThemeMode={toogleThemeMode} themeMode={mode} />
+              <Outlet />
+            </Stack>
+          </Box>
+        </ThemeProvider>
+      ) : (
         <Navigate to="/" />
-      )} */}
+      )}
       {/* <Content /> */}
     </div>
   );

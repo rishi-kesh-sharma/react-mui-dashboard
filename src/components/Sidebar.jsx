@@ -38,18 +38,18 @@ const Sidebar = ({ toogleThemeMode, themeMode }) => {
       // bgcolor={red[200]} // debuging stuff
       sx={{
         display: { xs: "none", sm: "block" },
-        minWidth: "150px",
-        height: "100vh",
         width: "200px",
+        height: "100vh",
         maxWidth: "20%",
         borderRight: "1px solid #c9c8c7 ",
-      }}>
+      }}
+    >
       <Box position="fixed">
         <List>
           {links.map(({ title, icon, path }, index) => (
-            <ListItem key={index}>
+            <ListItem key={index} sx={{ width: "100%" }}>
               <Link to={path} style={{ textDecoration: "none", color: "red" }}>
-                <ListItemButton>
+                <ListItemButton sx={{ width: "100%" }}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={title} />
                 </ListItemButton>

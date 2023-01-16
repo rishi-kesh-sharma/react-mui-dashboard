@@ -9,6 +9,10 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useEffect } from "react";
 import { getAllUsers, getUser } from "../../apiCalls/user";
+import { useSelector } from "react-redux";
+
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const columns = [
   { id: "sn", label: "SN", minWidth: 60 },
@@ -45,73 +49,52 @@ function createData(
     remove,
   };
 }
-const rows = [
-  createData(
-    1,
-    "my avatar",
-    "superadmin",
-    "kathmandu",
-    "superadmin@gmail.com",
-    "9876543210",
-    "superadmin",
-    <button
-      style={{
-        background: "blue",
-        color: "white",
-        border: "none",
-        padding: "0.2rem 0.5rem",
-
-        cursor: "pointer",
-        borderRadius: "0.4rem",
-      }}>
-      edit
-    </button>,
-    <button
-      style={{
-        background: "red",
-        color: "white",
-        border: "none",
-        padding: "0.2rem 0.5rem",
-
-        cursor: "pointer",
-        borderRadius: "0.4rem",
-      }}>
-      remove
-    </button>
-  ),
-  // createData("China", "CN", 1403500365, 9596961),
-  // createData("Italy", "IT", 60483973, 301340),
-  // createData("United States", "US", 327167434, 9833520),
-  // createData("Canada", "CA", 37602103, 9984670),
-  // createData("Australia", "AU", 25475400, 7692024),
-  // createData("Germany", "DE", 83019200, 357578),
-  // createData("Ireland", "IE", 4857000, 70273),
-  // createData("Mexico", "MX", 126577691, 1972550),
-  // createData("Japan", "JP", 126317000, 377973),
-  // createData("France", "FR", 67022000, 640679),
-  // createData("United Kingdom", "GB", 67545757, 242495),
-  // createData("Russia", "RU", 146793744, 17098246),
-  // createData("Nigeria", "NG", 200962417, 923768),
-  // createData("Brazil", "BR", 210147125, 8515767),
-];
 
 export default function UsersTable() {
   const [loading, setLoading] = React.useState(true);
-  useEffect(async () => {
-    const response = await getAllUsers();
-    console.log(response);
-  }, []);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const usersInfo = useSelector((state) => state.userReducer);
+  const rows = usersInfo?.users?.map((user, index) => {
+    const { address, contact, email, profilePic, role, username } = user;
+    return createData(
+      index + 1,
+      profilePic,
+      username,
+      address,
+      email,
+      contact,
+      role,
+      <button
+        style={{
+          background: "blue",
+          color: "white",
+          border: "none",
+          padding: "0.2rem 0.5rem",
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+          cursor: "pointer",
+          borderRadius: "0.4rem",
+        }}
+      >
+        edit
+      </button>,
+      <button
+        style={{
+          background: "red",
+          color: "white",
+          border: "none",
+          padding: "0.2rem 0.5rem",
+
+          cursor: "pointer",
+          borderRadius: "0.4rem",
+        }}
+      >
+        remove
+      </button>
+    );
+  });
+
+  const handlePrevClick = () => {};
+  const handleNextClick = () => {};
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "5rem" }}>
@@ -123,44 +106,50 @@ export default function UsersTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}>
+                  style={{ minWidth: column.minWidth }}
+                >
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {/* {typeof value == "object" && Array.isArray(value)
+            {rows?.map((row, index) => {
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {/* {typeof value == "object" && Array.isArray(value)
                             ? value.map((item) => item.link)
                             : value} */}
-                          {value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      <div
+        style={{
+          margin: " 0.5rem 0 0.5rem 90% ",
+          display: "flex",
+          gap: "1.5rem",
+        }}
+      >
+        <ArrowBackIosNewIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handlePrevClick}
+        />
+        <ArrowForwardIosIcon
+          sx={{ fontSize: "1.2rem", cursor: "pointer" }}
+          onClick={handleNextClick}
+        />
+      </div>
     </Paper>
   );
 }

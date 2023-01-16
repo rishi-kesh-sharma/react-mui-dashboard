@@ -53,7 +53,7 @@ const UserBox = styled(Box)(({ theme }) => ({
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const openMenu = () => setOpen(true);
   const closeMenu = () => setOpen(false);
@@ -76,7 +76,8 @@ const Navbar = () => {
         <Typography
           variant="h6"
           fontWeight={600}
-          sx={{ display: { xs: "none", sm: "block" } }}>
+          sx={{ display: { xs: "none", sm: "block" } }}
+        >
           {"<JohnKoder />"}
         </Typography>
         <Code sx={{ display: { xs: "block", sm: "none" } }} />
@@ -118,7 +119,8 @@ const Navbar = () => {
             transformOrigin={{
               vertical: "top",
               horizontal: "right",
-            }}>
+            }}
+          >
             <MenuItem>Profile</MenuItem>
             <MenuItem>My account</MenuItem>
             <MenuItem>Logout</MenuItem>
